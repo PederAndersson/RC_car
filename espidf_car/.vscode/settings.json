@@ -1,0 +1,9 @@
+{
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}/build",
+        "--query-driver=**/riscv32-esp-elf-*,**/xtensa-esp-elf-*,/usr/bin/g++,/usr/bin/c++"
+    ],
+    "idf.espIdfPath": "/home/peder/.espressif/v5.5.2/esp-idf",
+    "idf.toolsPath": "/home/peder/.espressif",
+    "idf.currentSetup": "/home/peder/.espressif/v5.5.2/esp-idf"
+}

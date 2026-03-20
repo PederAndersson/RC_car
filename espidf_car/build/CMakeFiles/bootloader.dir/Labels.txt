@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/CMakeFiles/bootloader
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/CMakeFiles/bootloader.rule
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/CMakeFiles/bootloader-complete.rule
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/home/peder/school/embedded/projects/RC_car/espidf_car/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
