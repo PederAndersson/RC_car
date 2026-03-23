@@ -1,53 +1,57 @@
 #ifndef DC_MOTOR_H
 #define DC_MOTOR_H
 
-#include "soc/gpio_num.h"
+#include "esp_err.h"
+#include "driver/gpio.h"
+#include "driver/ledc.h"
+#include "hal/ledc_types.h"
 #include <stdint.h>
-namespace DC {
 
+
+namespace Driver {
+    
     struct MotorPins {
-        gpio_num_t  enable_pin;
-        gpio_num_t  in1;
-        gpio_num_t  in2;
+        gpio_num_t  enable_gpio;
+        gpio_num_t  in1_gpio;
+        gpio_num_t  in2_gpio;
     };
-
     struct MotorConfig {
         MotorPins motor;
-        gpio_num_t ledc_channel;
-        gpio_num_t ledc_timer;
-        gpio_num_t pwm_freq_hz;
-        gpio_num_t pwm_resolution;
+        ledc_timer_t timer;
+        ledc_channel_t channel;
+        ledc_mode_t mode;
+        ledc_timer_bit_t duty_res;
+        uint32_t pwm_freq_hz;
     };
 
-    enum class MotorState {
-        Idle,
+
+    enum class Direction {
         Forward,
         Reverse,
-        Brake,
-        Error
-        
     };
-
+    
     enum class StopMode {
         Brake,
         Coast
     };
-    class DcMotor {
+
+    class L298N {
         public:
-
-        void init();
-        void set_throttle(int8_t percent);
-        void coast_stop();
-        void brake_stop();
-        void state();
-
+        explicit L298N(const MotorConfig& config);
+        ~L298N() = default;
+        esp_err_t init();
+        esp_err_t set_throttle_percent(int8_t percent);
+        esp_err_t set_speed_percent(uint8_t percent);
+        esp_err_t set_direction(Direction direction);
+        esp_err_t stop(StopMode mode);
+        
         private:
-        struct Motor;
-        bool apply_direction(int32_t joystick_input);
-        uint8_t set_pwm(int32_t joystick_input);
-
+        MotorConfig config_;
+        bool initialized_;
+        Direction direction_;
+        uint8_t speed_percent_;
     };
-
+    
 }
 
 
