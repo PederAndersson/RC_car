@@ -6,6 +6,7 @@
 #include "servo.h"
 #include "esp_check.h"
 
+// Hardware-to-driver mapping for the L298N motor channel.
 const Driver::MotorConfig motor_config{
     .motor = {
         .enable_gpio = GPIO_NUM_10,
@@ -19,6 +20,7 @@ const Driver::MotorConfig motor_config{
     .pwm_freq_hz = 1000
 };
 
+// Typical SG90 setup: 50 Hz frame and calibrated pulse window.
 const Driver::ServoConfig servo_cfg{
     .pwm_pin = GPIO_NUM_5,
     .timer = LEDC_TIMER_1,
@@ -39,10 +41,13 @@ static const char* TAG = "RC_CAR";
 
 extern "C" esp_err_t app_main(void) {
     ESP_LOGI(TAG, "RC car boot ok");
+
+    // Initialize peripherals once before entering the control loop.
     esp_err_t err = motor.init();
     ESP_RETURN_ON_ERROR(err, TAG, "motor.init failed");
     err = servo.init();
     ESP_RETURN_ON_ERROR(err,TAG,"servo.init failed");
+    // Demo sequence: forward -> stop -> reverse -> stop.
     while (true) {
         ESP_LOGI(TAG, "Forward 75%%");
         err = motor.set_throttle_percent(75);
