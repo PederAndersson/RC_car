@@ -1,3 +1,6 @@
+#include "esp_err.h"
+#include "esp_now_receive.h"
+#include "esp_wifi.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
@@ -5,7 +8,7 @@
 #include "hal/ledc_types.h"
 #include "servo.h"
 #include "esp_check.h"
-
+#include "esp_mac.h"
 // Hardware-to-driver mapping for the L298N motor channel.
 const Driver::MotorConfig motor_config{
     .motor = {
@@ -37,6 +40,11 @@ const Driver::ServoConfig servo_cfg{
 Driver::L298N motor(motor_config);
 Driver::Sg90 servo(servo_cfg);
 
+Car_input car{
+    .throttle = 0,
+    .steering = 90
+};
+
 static const char* TAG = "RC_CAR";
 
 extern "C" esp_err_t app_main(void) {
@@ -47,35 +55,21 @@ extern "C" esp_err_t app_main(void) {
     ESP_RETURN_ON_ERROR(err, TAG, "motor.init failed");
     err = servo.init();
     ESP_RETURN_ON_ERROR(err,TAG,"servo.init failed");
-    // Demo sequence: forward -> stop -> reverse -> stop.
+    err = car_control_init();
+    ESP_RETURN_ON_ERROR(err, TAG, "car_control_init failed");
+    uint8_t mac[6];
+    err = esp_wifi_get_mac(WIFI_IF_STA, mac);
+    ESP_RETURN_ON_ERROR(err, TAG, "failed to get MAC-adress");
+    ESP_LOGI(TAG, "Car MAC: " MACSTR, MAC2STR(mac));
     while (true) {
-        ESP_LOGI(TAG, "Forward 75%%");
-        err = motor.set_throttle_percent(75);
-        ESP_RETURN_ON_ERROR(err,TAG,"motor.set_trottle failed");
-        err = servo.set_angle(45);
-        ESP_RETURN_ON_ERROR(err,TAG,"servo.set_angle failed");
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        err = receive_input(&car, 500);
+        if (err != ESP_ERR_TIMEOUT){
+        motor.set_throttle_percent(car.throttle);
+        servo.set_angle(car.steering);
+    } else {
+        motor.set_throttle_percent(0);
+    }
 
-        ESP_LOGI(TAG, "Stop");
-        err = motor.set_throttle_percent(0);
-        ESP_RETURN_ON_ERROR(err,TAG,"motor.set_throttle failed");
-        err = servo.set_angle(90);
-        ESP_RETURN_ON_ERROR(err,TAG,"servo.set_angle failed");
-        vTaskDelay(pdMS_TO_TICKS(1000));
-
-        ESP_LOGI(TAG, "Reverse 75%%");
-        err = motor.set_throttle_percent(-75);
-        ESP_RETURN_ON_ERROR(err,TAG,"motor.set_throttle failed");
-        err = servo.set_angle(135);
-        ESP_RETURN_ON_ERROR(err,TAG,"servo.set_angle failed");
-        vTaskDelay(pdMS_TO_TICKS(2000));
-
-        ESP_LOGI(TAG, "Stop");
-        err = motor.set_throttle_percent(0);
-        ESP_RETURN_ON_ERROR(err,TAG,"motor.set_throttle failed");
-        err = servo.set_angle(90);
-        ESP_RETURN_ON_ERROR(err,TAG,"servo.set_angle failed");
-        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 
 }
