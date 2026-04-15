@@ -1,0 +1,16 @@
+CompileFlags:
+  Remove:
+    - -fno-tree-switch-conversion
+    - -fstrict-volatile-bitfields
+    - -fno-shrink-wrap
+    - -mdisable-multilib-check
+    - -fvisibility=hidden
+    - -fvisibility-inlines-hidden
+
+Diagnostics:
+  Suppress:
+    - unknown-argument
+  UnusedIncludes: None
+
+Index:
+  Background: Skip

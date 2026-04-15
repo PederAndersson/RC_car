@@ -17,6 +17,8 @@ namespace Driver {
     esp_err_t Sg90::init(){
         esp_err_t err = gpio_set_direction(config_.pwm_pin, GPIO_MODE_OUTPUT);
         ESP_RETURN_ON_ERROR(err, TAG, "gpio_set_direction failed");
+
+        // Configure LEDC timer/channel for a 50 Hz servo PWM signal.
         ledc_timer_config_t timer_cfg {
             .speed_mode = config_.mode,
             .duty_resolution = config_.duty_res,
@@ -41,6 +43,7 @@ namespace Driver {
         err = ledc_channel_config(&channel_cfg);
         ESP_RETURN_ON_ERROR(err, TAG, "ledc_channel_config failed");
         initialized_ = true;
+        // Center on boot so steering starts from a predictable neutral position.
         err = set_angle(90);
         ESP_RETURN_ON_ERROR(err,TAG,"set_angle failed");
         return ESP_OK;
@@ -50,6 +53,8 @@ namespace Driver {
         if (!initialized_) {return ESP_ERR_INVALID_STATE;}
         if (config_.pwm_freq_hz == 0 || config_.max_angle <= config_.min_angle) {return ESP_ERR_INVALID_ARG;}
         if (config_.max_pulse_us <= config_.min_pulse_us) {return ESP_ERR_INVALID_ARG;}
+
+        // Convert target angle -> pulse width (us) -> LEDC duty counts.
         const uint32_t period_us = 1000000u / config_.pwm_freq_hz;
         const uint32_t max_duty = (1u << static_cast<uint32_t>(config_.duty_res)) -1u;
         const uint32_t angle_clamp = std::min<uint32_t>(config_.max_angle,

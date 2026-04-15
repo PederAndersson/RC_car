@@ -13,6 +13,7 @@ namespace Driver {
     {}
 
     esp_err_t L298N::init(){
+        // IN1/IN2 are the H-bridge direction pins; start both low (coast).
         esp_err_t err = gpio_set_direction(config_.motor.in1_gpio, GPIO_MODE_OUTPUT);
         if (err != ESP_OK) {return err;}
         err = gpio_set_direction(config_.motor.in2_gpio, GPIO_MODE_OUTPUT);
@@ -56,6 +57,7 @@ namespace Driver {
     esp_err_t L298N::set_speed_percent(uint8_t percent){
         if (!initialized_) {return ESP_ERR_INVALID_STATE;}
         if (percent > 100) {percent = 100;}
+        // LEDC duty is an N-bit value in range [0, 2^N - 1].
         const uint32_t max_duty = (1u << static_cast<uint32_t>(config_.duty_res)) - 1u;
         const uint32_t duty = (static_cast<uint32_t>(percent) * max_duty) / 100u;
 
@@ -70,6 +72,7 @@ namespace Driver {
     esp_err_t L298N::set_direction(Direction direction){
         if(!initialized_) {return ESP_ERR_INVALID_STATE;}
         esp_err_t err;
+        // L298N truth table for one motor channel: IN1=1,IN2=0 forward; IN1=0,IN2=1 reverse.
         if (direction == Direction::Forward){
             err = gpio_set_level(config_.motor.in1_gpio, 1);
             if (err != ESP_OK) {return err;}
@@ -96,6 +99,7 @@ namespace Driver {
         if (err != ESP_OK) {return err;}
         switch (stop){
             case StopMode::Coast:{
+                // Coast: both low lets motor spin down freely.
                 err = gpio_set_level(config_.motor.in1_gpio,0);
                 if (err != ESP_OK){return err;}
                 err = gpio_set_level(config_.motor.in2_gpio,0);
@@ -103,6 +107,7 @@ namespace Driver {
                 break;
             }
             case StopMode::Brake:{
+                // Brake: both high actively short-brakes the motor through the bridge.
                 err = gpio_set_level(config_.motor.in1_gpio,1);
                 if (err != ESP_OK){return err;}
                 err = gpio_set_level(config_.motor.in2_gpio,1);
@@ -118,6 +123,7 @@ namespace Driver {
         if (!initialized_) {return ESP_ERR_INVALID_STATE;}
         if (percent < -100) {percent = -100;}
         if (percent > 100) {percent = 100;}
+        // Signed throttle maps to direction (sign) + magnitude (absolute value).
         if (percent == 0) {return stop(StopMode::Coast);}
         esp_err_t err = set_direction(percent > 0 ? Direction::Forward : Direction::Reverse);
         if (err != ESP_OK) {return err;}
