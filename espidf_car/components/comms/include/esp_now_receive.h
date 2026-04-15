@@ -17,7 +17,7 @@ typedef struct __attribute__((packed)) {
 }Car_input;
 
 // Initializes NVS, Wi-Fi (STA), ESP-NOW and the receive queue/callback.
-esp_err_t car_control_init();
+esp_err_t car_control_init(); // car MAC-adress : dc:b4:d9:9a:61:f8
 // Waits for next command packet; returns ESP_ERR_TIMEOUT if none arrives in time.
 esp_err_t receive_input(Car_input *input, uint32_t timeout);
 #endif
