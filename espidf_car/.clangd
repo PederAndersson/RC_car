@@ -1,0 +1,17 @@
+CompileFlags:
+  Remove:
+    - -fno-tree-switch-conversion
+    - -fstrict-volatile-bitfields
+    - -fno-shrink-wrap
+    - -mdisable-multilib-check
+    - -fvisibility=hidden 
+    - -fvisibility-inlines-hidden
+
+If:
+  PathMatch: ^components/drivers/include/.*\.h$  
+
+Diagnostics:
+  UnusedIncludes: None
+
+Index:
+  Background: Skip
