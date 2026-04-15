@@ -1,0 +1,2 @@
+source /home/peder/school/embedded/projects/RC_car/espidf_controller/build/bootloader/gdbinit/symbols
+source /home/peder/school/embedded/projects/RC_car/espidf_controller/build/bootloader/gdbinit/connect
