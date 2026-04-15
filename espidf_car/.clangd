@@ -4,13 +4,12 @@ CompileFlags:
     - -fstrict-volatile-bitfields
     - -fno-shrink-wrap
     - -mdisable-multilib-check
-    - -fvisibility=hidden 
+    - -fvisibility=hidden
     - -fvisibility-inlines-hidden
 
-If:
-  PathMatch: ^components/drivers/include/.*\.h$  
-
 Diagnostics:
+  Suppress:
+    - unknown-argument
   UnusedIncludes: None
 
 Index:
