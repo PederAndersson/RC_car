@@ -1,0 +1,39 @@
+# ESP-IDF build artifacts
+build/
+*.o
+*.a
+*.so
+*.elf
+*.bin
+*.map
+
+# ESP-IDF generated project files
+compile_commands.json
+sdkconfig.old
+sdkconfig.run
+
+# IDE and editor files
+.vscode/
+.idea/
+.cache/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python / tooling caches
+venv/
+ENV/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# CMake user presets
+CMakeUserPresets.json
+
+# Flashing / serial helper files
+flash_args
+flash_project_args

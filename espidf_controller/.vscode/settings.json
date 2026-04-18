@@ -1,7 +1,9 @@
 {
+    "C_Cpp.intelliSenseEngine": "Disabled",
+    "C_Cpp.errorSquiggles": "Disabled",
     "clangd.arguments": [
-        "--query-driver=**/riscv32-esp-elf-*,**/xtensa-esp-elf-*,/usr/bin/g++,/usr/bin/c++",
-        "--compile-commands-dir=build"
+            "--background-index",
+            "--query-driver=/home/peder/.espressif/tools/**/bin/*-esp32-elf-*,/home/peder/.espressif/tools/**/bin/*-esp-elf-*,/usr/bin/g++,/usr/bin/c++"
     ],
     "idf.espIdfPath": "/home/peder/.espressif/v5.5.2/esp-idf",
     "idf.toolsPath": "/home/peder/.espressif",
