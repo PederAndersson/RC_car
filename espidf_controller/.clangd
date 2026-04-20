@@ -1,4 +1,5 @@
 CompileFlags:
+  CompilationDatabase: build
   Remove:
     - -fno-tree-switch-conversion
     - -fstrict-volatile-bitfields
@@ -6,6 +7,7 @@ CompileFlags:
     - -mdisable-multilib-check
     - -fvisibility=hidden
     - -fvisibility-inlines-hidden
+    - -mlongcalls
 
 Diagnostics:
   Suppress:
