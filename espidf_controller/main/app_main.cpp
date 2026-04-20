@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <stdio.h>
+#include "control.h"
 #include "freertos/projdefs.h"
 #include "joystick.h"
 #include "send.h"
@@ -22,9 +23,9 @@ extern "C" void app_main(void) {
     input.throttle = 50;
 
     while(true){
-        //send_input(&input);
         read_joystick(&joystick);
-        printf("x-axis: %d\n , y-axis: %d\n", joystick.x_axis, joystick.y_axis);
+        joystick_to_car_input(&input, &joystick);
+        send_input(&input);
         vTaskDelay(pdMS_TO_TICKS(20));
 
     }
